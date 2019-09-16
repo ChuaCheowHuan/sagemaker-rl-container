@@ -24,10 +24,6 @@ import pytest
 from sagemaker import LocalSession, Session
 from sagemaker.rl import RLEstimator
 
-
-from sagemaker import get_execution_role # new
-
-
 logger = logging.getLogger(__name__)
 logging.getLogger('boto').setLevel(logging.INFO)
 logging.getLogger('botocore').setLevel(logging.INFO)
@@ -43,12 +39,7 @@ def pytest_addoption(parser):
     parser.addoption('--docker-image')
     parser.addoption('--framework', choices=['tensorflow', 'mxnet', 'vw'])
     parser.addoption('--region', default='us-west-2')
-
-
-    #parser.addoption('--role', default='SageMakerContainerBuildIntegrationTests')
-    parser.addoption('--role', default=get_execution_role()),
-
-
+    parser.addoption('--role', default='SageMakerContainerBuildIntegrationTests')
     parser.addoption('--toolkit', choices=['coach', 'ray', 'none'])
     parser.addoption('--toolkit-version')
     parser.addoption('--processor', default='cpu', choices=['gpu', 'cpu'])
@@ -125,9 +116,9 @@ def instance_type(request, processor):
 def docker_image(request, docker_base_name, tag):
     provided_docker_image = request.config.getoption('--docker-image')
     if provided_docker_image:
-        return provided_docker_image
+        return provided_docker_image 
     return '{}:{}'.format(docker_base_name, tag)
-
+    
 
 
 @pytest.fixture(scope='session')
@@ -185,7 +176,7 @@ def pretrained_model_vw():
 
     file = os.path.join(tmp, "model.tar.gz")
     download("https://github.com/saurabh3949/Text-Classification-Datasets/raw/master/model.tar.gz", file)
-
+    
     tmp = "file://" + tmp
     yield tmp
 
@@ -203,7 +194,7 @@ def training_data_bandits():
 
     file = os.path.join(tmp, "bandits_logged.csv")
     download("https://github.com/saurabh3949/Text-Classification-Datasets/raw/master/logged_data.csv", file)
-
+    
     tmp = "file://" + tmp
     yield tmp
 
@@ -221,7 +212,7 @@ def training_data_supervised():
 
     file = os.path.join(tmp, "statlog_supervised.vw")
     download("https://github.com/saurabh3949/Text-Classification-Datasets/raw/master/statlog.vw", file)
-
+    
     tmp = "file://" + tmp
     yield tmp
 

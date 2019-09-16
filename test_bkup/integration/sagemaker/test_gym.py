@@ -19,20 +19,12 @@ from test.integration import RESOURCE_PATH
 from timeout import timeout
 
 
-from sagemaker import get_execution_role # new
-
-
 def test_gym(sagemaker_session, ecr_image, instance_type, framework):
     resource_path = os.path.join(RESOURCE_PATH, 'gym')
     gym_script = 'launcher.sh' if framework == 'tensorflow' else 'gym_envs.py'
     estimator = RLEstimator(entry_point=gym_script,
                             source_dir=resource_path,
-
-                            
-                            #role='SageMakerRole',
-                            role = get_execution_role(),
-
-                            
+                            role='SageMakerRole',
                             train_instance_count=1,
                             train_instance_type=instance_type,
                             sagemaker_session=sagemaker_session,

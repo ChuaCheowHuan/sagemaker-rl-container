@@ -21,6 +21,9 @@ from test.integration import RESOURCE_PATH
 import local_mode_utils
 
 
+from sagemaker import get_execution_role # new
+
+
 @pytest.mark.run_ray
 def test_ray_tf(local_instance_type, sagemaker_local_session, docker_image, tmpdir):
     source_dir = os.path.join(RESOURCE_PATH, 'ray_cartpole')
@@ -28,7 +31,11 @@ def test_ray_tf(local_instance_type, sagemaker_local_session, docker_image, tmpd
 
     estimator = RLEstimator(entry_point=cartpole,
                             source_dir=source_dir,
-                            role='SageMakerRole',
+
+
+                            #role='SageMakerRole',
+                            role = get_execution_role(),
+
                             train_instance_count=1,
                             train_instance_type=local_instance_type,
                             sagemaker_session=sagemaker_local_session,

@@ -13,26 +13,21 @@
 from __future__ import absolute_import
 
 import os
+import pytest
 
 from sagemaker.rl import RLEstimator
 from test.integration import RESOURCE_PATH
 from timeout import timeout
 
 
-from sagemaker import get_execution_role # new
+@pytest.mark.run_ray
+def test_ray_tf(sagemaker_session, ecr_image, instance_type):
+    source_dir = os.path.join(RESOURCE_PATH, 'ray_cartpole')
+    cartpole = 'train_ray.py'
 
-
-def test_gym(sagemaker_session, ecr_image, instance_type, framework):
-    resource_path = os.path.join(RESOURCE_PATH, 'gym')
-    gym_script = 'launcher.sh' if framework == 'tensorflow' else 'gym_envs.py'
-    estimator = RLEstimator(entry_point=gym_script,
-                            source_dir=resource_path,
-
-                            
-                            #role='SageMakerRole',
-                            role = get_execution_role(),
-
-                            
+    estimator = RLEstimator(entry_point=cartpole,
+                            source_dir=source_dir,
+                            role='SageMakerRole',
                             train_instance_count=1,
                             train_instance_type=instance_type,
                             sagemaker_session=sagemaker_session,

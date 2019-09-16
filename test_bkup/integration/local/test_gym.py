@@ -21,19 +21,12 @@ from test.integration import RESOURCE_PATH
 import local_mode_utils
 
 
-from sagemaker import get_execution_role # new
-
-
 def test_gym(local_instance_type, sagemaker_local_session, docker_image, tmpdir, framework):
     source_path = os.path.join(RESOURCE_PATH, 'gym')
     gym_script = 'launcher.sh' if framework == 'tensorflow' else 'gym_envs.py'
     estimator = RLEstimator(entry_point=gym_script,
                             source_dir=source_path,
-
-
-                            #role='SageMakerRole',
-                            role = get_execution_role(),
-
+                            role='SageMakerRole',
                             train_instance_count=1,
                             train_instance_type=local_instance_type,
                             sagemaker_session=sagemaker_local_session,

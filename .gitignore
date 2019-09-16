@@ -11,3 +11,5 @@ build/
 .idea/*
 .cache
 .DS_Store
+local_test_output.txt
+SageMaker_test_output.txt
